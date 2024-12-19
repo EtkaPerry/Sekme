@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link id="custom-css-link" rel="stylesheet" href="custom.css" />
+    <title>Sekme</title>
+    <script type="module" src="js/script.js"></script>
+</head>
+<body>
+    <header class="sticky-header" role="banner">
+        <div class="icon-container">
+            <button id="toggle-mode" class="icon" aria-label="Toggle Dark Mode" title="Toggle Dark Mode">
+                <img id="dark-mode-icon" src="resim/ay.png" alt="Toggle Dark Mode" />
+            </button>
+            <button id="settings-icon" class="icon" aria-label="Settings" title="Settings">
+                <img src="resim/ayar.png" alt="Settings" />
+            </button>
+        </div>
+    </header>
+
+    <aside id="settings-box" class="settings-box" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+        <div class="settings-content">
+            <h2 class="ayarbaslik" data-translate="settings">Settings</h2>
+            <section class="settings-section collapsed">
+                <h3 class="settings-header" data-translate="mainS">Main</h3>
+                <div class="settings-body">
+                    <div class="setting-input">
+                        <label for="menu-width" data-translate="menuWidth">Main Width:</label>
+                        <input type="range" id="menu-width" min="300" max="5000" value="1200" step="50" class="slider" />
+                        <span id="menu-width-value">1200px</span>
+                    </div>
+                    <div class="setting-input">
+                        <label class="toggle-label">
+                            <span data-translate="fixedItemWidth">Fixed Item Width:</span>
+                            <input type="checkbox" id="fixed-item-width" class="toggle-input" checked />
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="settings-section collapsed">
+                <h3 class="settings-header" data-translate="recentlyUsedWebsitesS">Recently Used Websites</h3>
+                <div class="settings-body">
+                    <label class="toggle-label">
+                        <span data-translate="hideRecentlyUsedWebsites">Hide Recently Used Websites:</span>
+                        <input type="checkbox" id="hide-recently-used" class="toggle-input" />
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <div class="setting-input">
+                        <label for="max-recently-used-items" data-translate="maxRecentlyUsedWebsitesToShow">Max Recently Used Websites to Show:</label>
+                        <input type="number" id="max-recently-used-items" min="1" max="30" value="7" step="1" class="styled-number" />
+                    </div>
+                </div>
+            </section>
+
+            <section class="settings-section collapsed">
+                <h3 class="settings-header" data-translate="bookmarksSettings">Bookmarks</h3>
+                <div class="settings-body">
+                    <label class="toggle-label">
+                        <span data-translate="hideBookmarks">Hide Bookmarks:</span>
+                        <input type="checkbox" id="hide-bookmarks" class="toggle-input" />
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <div class="setting-input">
+                        <label for="max-bookmarks" data-translate="maxBookmarksToShow">Max Bookmarks to Show:</label>
+                        <input type="number" id="max-bookmarks" min="1" max="210" value="21" step="1" class="styled-number" />
+                    </div>
+                </div>
+            </section>
+
+            <section class="settings-section collapsed">
+                <h3 class="settings-header" data-translate="customBookmarksSettings">Custom Bookmarks</h3>
+                <div class="settings-body">
+                    <label class="toggle-label">
+                        <span data-translate="hideCustomBookmarks">Hide Custom Bookmarks:</span>
+                        <input type="checkbox" id="hide-custom-bookmarks" class="toggle-input" />
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <div class="setting-input">
+                        <label for="max-custom-bookmarks" data-translate="maxCustomBookmarksToShow">Max Custom Bookmarks to Show:</label>
+                        <input type="number" id="max-custom-bookmarks" min="1" max="30" value="7" step="1" class="styled-number" />
+                    </div>
+                    <button id="add-custom-bookmark" data-translate="addCustomBookmark">Add Custom Bookmark</button>
+                </div>
+            </section>
+
+            <section class="settings-section collapsed">
+                <h3 class="settings-header" data-translate="rearrangeSections">Rearrange Sections</h3>
+                <div class="settings-body">
+                    <ul id="rearrange-sections-list">
+                        <li draggable="true" data-section-id="recently-used-section">
+                            <span class="section-number">1.</span>
+                            <span class="section-name" data-translate="recentlyUsedWebsites">Recently Used Websites</span>
+                        </li>
+                        <li draggable="true" data-section-id="bookmarks-section">
+                            <span class="section-number">2.</span>
+                            <span class="section-name" data-translate="yourBookmarks">Your Bookmarks</span>
+                        </li>
+                        <li draggable="true" data-section-id="custom-bookmarks-section">
+                            <span class="section-number">3.</span>
+                            <span class="section-name" data-translate="yourCustomBookmarks">Your Custom Bookmarks</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="settings-section collapsed">
+                <h3 class="settings-header" data-translate="themeSettings">Theme Settings</h3>
+                <div class="settings-body">
+                    <div class="setting-input">
+                        <label for="theme-color" data-translate="themeColor">Theme Color:</label>
+                        <input type="color" id="theme-color" value="#333333" />
+                    </div>
+                    <div class="setting-input">
+                        <label data-translate="predefinedThemes">Predefined Themes:</label>
+                        <div class="predefined-colors" role="list">
+                            <button class="color-swatch" data-color="#333333" style="background-color: #333333;" aria-label="Theme Color #333333"></button>
+                            <button class="color-swatch" data-color="#1e90ff" style="background-color: #1e90ff;" aria-label="Theme Color #1e90ff"></button>
+                            <button class="color-swatch" data-color="#28a745" style="background-color: #28a745;" aria-label="Theme Color #28a745"></button>
+                            <button class="color-swatch" data-color="#ffc107" style="background-color: #ffc107;" aria-label="Theme Color #ffc107"></button>
+                            <button class="color-swatch" data-color="#dc3545" style="background-color: #dc3545;" aria-label="Theme Color #dc3545"></button>
+                            <button class="color-swatch" data-color="#6f42c1" style="background-color: #6f42c1;" aria-label="Theme Color #6f42c1"></button>
+                            <button class="color-swatch" data-color="#17a2b8" style="background-color: #17a2b8;" aria-label="Theme Color #17a2b8"></button>
+                            <button class="color-swatch" data-color="#e83e8c" style="background-color: #e83e8c;" aria-label="Theme Color #e83e8c"></button>
+                            <button class="color-swatch" data-color="#fd7e14" style="background-color: #fd7e14;" aria-label="Theme Color #fd7e14"></button>
+                            <button class="color-swatch" id="last-selected-color-swatch" data-color="#20c997" style="background-color: #20c997;" aria-label="Last Selected Theme Color"></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="settings-section collapsed">
+                <h3 class="settings-header" data-translate="clockSettings">Clock Settings</h3>
+                <div class="settings-body">
+                    <div class="setting-input">
+                        <label for="clock-position" data-translate="clockPosition">Clock Position:</label>
+                        <select id="clock-position">
+                            <option value="none" selected data-translate="noClock">No Clock</option>
+                            <option value="replace-logo" data-translate="replaceLogo">Replace Logo</option>
+                            <option value="top-right" data-translate="topRight">Top Right</option>
+                            <option value="top-left" data-translate="topLeft">Top Left</option>
+                            <option value="bottom-right" data-translate="bottomRight">Bottom Right</option>
+                            <option value="bottom-left" data-translate="bottomLeft">Bottom Left</option>
+                        </select>
+                    </div>
+                    <div class="setting-input">
+                        <label for="time-format" data-translate="timeFormat">Time Format:</label>
+                        <select id="time-format">
+                            <option value="24" selected data-translate="24Hour">24-Hour</option>
+                            <option value="12" data-translate="12Hour">12-Hour</option>
+                        </select>
+                    </div>
+                    <label class="toggle-label">
+                        <span data-translate="showSeconds">Show Seconds:</span>
+                        <input type="checkbox" id="show-seconds" class="toggle-input" />
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="settings-section collapsed">
+                <h3 class="settings-header" data-translate="backgroundImage">Background Image</h3>
+                <div class="settings-body">
+                    <label class="custom-radio-label">
+                        <input type="radio" name="background-option" value="none" checked />
+                        <span class="custom-radio"></span>
+                        <span data-translate="noBackground">No Background</span>
+                    </label>
+                    <label class="custom-radio-label">
+                        <input type="radio" name="background-option" value="unsplash" />
+                        <span class="custom-radio"></span>
+                        <span data-translate="imageFromUnsplash">Image from Unsplash</span>
+                    </label>
+                    <label class="custom-radio-label">
+                        <input type="radio" name="background-option" value="upload-link" />
+                        <span class="custom-radio"></span>
+                        <span data-translate="uploadFromLink">Upload from Link</span>
+                    </label>
+                    <label class="custom-radio-label">
+                        <input type="radio" name="background-option" value="upload-file" />
+                        <span class="custom-radio"></span>
+                        <span data-translate="uploadImage">Upload Image</span>
+                    </label>
+                    <div id="unsplash-credits" class="unsplash-credits" style="display:none; margin-top:10px;">
+                        <span data-translate="photoBy">Photo by</span> <a href="#" id="settings-unsplash-author-footer" target="_blank">Author</a> <span data-translate="on">on</span> <a href="#" id="settings-unsplash-photo-link" target="_blank">Unsplash</a>
+                        <button id="pin-background-button" class="pin-button" title="Pin" data-translate="pin">Pin</button>
+                    </div>
+                    <div id="upload-link-container" class="upload-link-container" style="display:none; margin-top:10px;">
+                        <input type="url" id="background-link-input" placeholder="https://example.com/image.jpg" />
+                        <button id="upload-link-button" data-translate="upload">Upload</button>
+                    </div>
+                    <div id="upload-file-container" class="upload-file-container" style="display:none; margin-top:10px;">
+                        <input type="file" id="background-file-input" accept="image/*" />
+                    </div>
+                </div>
+            </section>
+
+            <section class="settings-section collapsed">
+                <h3 class="settings-header" data-translate="customCSSSettings">Custom CSS</h3>
+                <div class="settings-body">
+                    <textarea id="custom-css-input" placeholder="Enter your custom CSS here..." class="custom-css-textarea"></textarea>
+                    <button id="save-custom-css" data-translate="saveCustomCSS">Save CSS</button>
+                    <button id="reset-custom-css" data-translate="resetCustomCSS">Reset CSS</button>
+                </div>
+            </section>
+
+            <section class="settings-section collapsed">
+                <h3 class="settings-header" data-translate="exportImportSettings">Export & Import Settings</h3>
+                <div class="settings-body">
+                    <button id="export-settings" class="export-button" data-translate="exportSettings">Export Settings</button>
+                    <button id="import-settings" class="import-button" data-translate="importSettings">Import Settings</button>
+                    <input type="file" id="import-settings-file" accept=".json" style="display:none;" />
+                </div>
+            </section>
+
+            <button id="reset-settings" data-translate="resetToDefault">Reset to Default</button>
+            <section id="more-section" class="settings-section collapsed" style="display: none;">
+                <h1 class="section-title" data-translate="more">More</h1>
+                <p>
+                    Etka Inc.
+                </p><br><hr>
+                <h1 class="section-title" data-translate="upcomingupdates">Upcoming Updates</h1>
+                    <ul>
+                        <li>Column count</li>
+                        <li>Weather Forecast</li>
+                        <li>Quick Notes</li>
+                        <li>Video Background</li>
+                        <li>Daily Quotes</li>
+                        <li>Music</li>
+                        <li>Stock Tracker</li>
+                        <li>Personal Stats</li>
+                        <li>Achievement</li>
+                        <li>Save Settings to Cloud</li>
+                        <li>Energy Tracker</li>
+                    </ul>
+            </section>
+        </div>
+        <div class="social-links">
+            <a href="https://www.patreon.com/Etka" target="_blank" class="social-link" aria-label="Patreon">
+                <img src="resim/patreon.png" alt="Patreon" />
+                <span>Patreon</span>
+            </a>
+            <a href="https://twitter.com/etkacouk" target="_blank" class="social-link" aria-label="Twitter">
+                <img src="resim/twitter.png" alt="Twitter" />
+                <span>Twitter</span>
+            </a>
+            <a href="https://github.com/EtkaPerry/Yeni-Sekme" target="_blank" class="social-link" aria-label="Github">
+                <img src="resim/github.png" alt="Github" />
+                <span>Github</span>
+            </a>
+            <a href="http://etka.co.uk" target="_blank" class="social-link" aria-label="Website">
+                <img src="resim/web.png" alt="Website" />
+                <span data-translate="website">Website</span>
+            </a>
+            <a href="https://steamcommunity.com/id/EtkaPerry/" target="_blank" class="social-link" aria-label="Steam">
+                <img src="resim/steam.png" alt="Steam" />
+                <span>Steam</span>
+            </a>
+            <button id="more-button" class="social-link" aria-label="More">
+                <img src="resim/more.png" alt="More Icon" />
+                <span data-translate="more">More</span>
+            </button>
+            <button id="back-button" class="social-link" aria-label="Back" style="display: none;">
+                <img src="resim/back.png" alt="Back Icon" />
+                <span data-translate="back">Back</span>
+            </button>
+        </div>
+    </aside>
+
+    <div id="add-bookmark-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="add-bookmark-title">
+        <div class="modal-content">
+            <button class="close-button" id="close-add-bookmark-modal" aria-label="Close">&times;</button>
+            <h2 id="add-bookmark-title" data-translate="addCustomBookmark">Add Custom Bookmark</h2>
+            <form id="add-bookmark-form">
+                <div class="form-group">
+                    <label for="bookmark-url" data-translate="url">URL:</label>
+                    <input type="url" id="bookmark-url" name="bookmark-url" required placeholder="https://example.com" aria-required="true" />
+                </div>
+                <div class="form-group">
+                    <label for="bookmark-title" data-translate="title">Title:</label>
+                    <input type="text" id="bookmark-title" name="bookmark-title" required placeholder="Example Site" aria-required="true" />
+                </div>
+                <span data-translate="bookmarkTip">Tip: You can also access this feature from the extension menu in the top-right corner of your browser. If you don't see the extension, click the puzzle icon in the top-right corner and pin it for easy access.</span><br><br>
+                <div class="form-buttons">
+                    <button type="submit" id="save-custom-bookmark" data-translate="saveBookmark">Save Bookmark</button>
+                    <button type="button" id="cancel-add-bookmark" data-translate="cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="main-content" id="main-content-container">
+        <main role="main">
+            <div id="logo-container">
+                <img id="logo" src="resim/logo.png" alt="Logo" class="logo" draggable="false" />
+                <div id="clock" class="clock" style="display: none;"></div>
+            </div>
+            <div class="clock-container" id="clock-top-right" style="display: none;"></div>
+            <div class="clock-container" id="clock-top-left" style="display: none;"></div>
+            <div class="clock-container" id="clock-bottom-right" style="display: none;"></div>
+            <div class="clock-container" id="clock-bottom-left" style="display: none;"></div>
+
+            <div class="search-container">
+                <label for="search-engine" class="visually-hidden" data-translate="selectSearchEngineLabel">Select Search Engine</label>
+                <select id="search-engine" class="search-engine-select" aria-label="Select Search Engine">
+                    <option value="https://www.google.com/search?q=" data-translate="google">Google</option>
+                    <option value="https://www.bing.com/search?q=" data-translate="bing">Bing</option>
+                    <option value="https://duckduckgo.com/?q=" data-translate="duckduckgo">DuckDuckGo</option>
+                    <option value="https://search.yahoo.com/search?p=" data-translate="yahoo">Yahoo</option>
+                    <option value="https://search.brave.com/search?q=" data-translate="braveSearch">Brave Search</option>
+                    <option value="https://www.qwant.com/?q=" data-translate="qwant">Qwant</option>
+                    <option value="https://www.ecosia.org/search?q=" data-translate="ecosia">Ecosia</option>
+                    <option value="https://www.startpage.com/do/search?q=" data-translate="startpage">Startpage</option>
+                    <option value="https://www.baidu.com/s?wd=" data-translate="baidu">Baidu</option>
+                    <option value="https://yandex.com/search/?text=" data-translate="yandex">Yandex</option>
+                </select>
+
+                <input type="text" id="search-input" placeholder="Search..." class="search-input" aria-label="Search" autofocus autocomplete="off" data-translate-placeholder="searchPlaceholder" />
+
+                <button id="search-button" class="search-button" aria-label="Search Button" title="Search" data-translate="search">Search</button>
+                <div class="custom-toggle-container">
+                    <label class="label" for="open-in-new-tab">
+                        <input id="open-in-new-tab" class="label__checkbox toggle-input" type="checkbox" />
+                        <span class="label__text">
+                            <span class="label__check">
+                                <span class="icon">✓</span>
+                                <span class="toggle-text" data-translate="openInNewTab">Open in New Tab</span>
+                            </span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <section id="recently-used-section">
+                <h2 id="most-used-title" class="section-title" data-translate="recentlyUsedWebsites">Recently Used Websites</h2>
+                <div id="most-used" class="websites-container" role="list"></div>
+                <p id="no-recent-websites-message" class="empty-message" style="display: none;" data-translate="noRecentWebsitesMessage">If there is any link visited it will be seen here</p>
+            </section>
+
+            <section id="bookmarks-section">
+                <h2 id="bookmarks-title" class="section-title" data-translate="yourBookmarks">Your Bookmarks</h2>
+                <div id="bookmarks" class="websites-container" role="list"></div>
+            </section>
+
+            <section id="custom-bookmarks-section">
+                <h2 id="custom-bookmarks-title" class="section-title" data-translate="yourCustomBookmarks">Your Custom Bookmarks</h2>
+                <div id="custom-bookmarks" class="websites-container" role="list"></div>
+            </section>
+        </main>
+    </div>
+
+    <footer id="main-footer">
+        <div class="footer-left">
+            <div id="background-credit" class="background-credit" style="display:none;">
+                <span data-translate="photoBy">Photo by</span> <a href="#" id="footer-unsplash-author-footer" target="_blank">Author</a> <span data-translate="on">on</span> <a href="#" id="footer-unsplash-photo-link" target="_blank">Unsplash</a>
+            </div>
+        </div>
+
+        <div class="footer-middle">
+            Version: 0.0.2.1.4
+        </div>
+
+        <div class="footer-right">
+            &copy; 2024 &nbsp; <a href="http://etka.co.uk">Etka Inc.</a> &nbsp;<span data-translate="licensedUnder">Licensed under</span> &nbsp; <a href="https://github.com/EtkaPerry/Sekme/blob/main/LICENSE">AGPL-3.0</a>
+        </div>
+    </footer>
+
+    <button id="back-to-top" aria-label="Back to Top">
+        <svg class="progress-circle" viewBox="0 0 100 100">
+            <circle class="progress-background" cx="50" cy="50" r="45" stroke="#ccc" stroke-width="10" fill="none" />
+            <circle class="progress-bar" cx="50" cy="50" r="45" stroke="#1e90ff" stroke-width="10" fill="none" stroke-linecap="round" 
+                transform="rotate(-90 50 50)" 
+                style="stroke-dasharray: 283; stroke-dashoffset: 283;"></circle>
+        </svg>
+        <span class="back-to-top-arrow">↑</span>
+    </button>
+
+    <div id="notification" class="notification" role="alert" aria-live="assertive"></div>
+</body>
+</html>
