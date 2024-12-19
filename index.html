@@ -28,7 +28,7 @@
                 <div class="settings-body">
                     <div class="setting-input">
                         <label for="menu-width" data-translate="menuWidth">Main Width:</label>
-                        <input type="range" id="menu-width" min="300" max="5000" value="1200" step="50" class="slider" />
+                        <input type="range" id="menu-width" min="500" max="5000" value="1200" step="50" class="slider" />
                         <span id="menu-width-value">1200px</span>
                     </div>
                     <div class="setting-input">
@@ -193,7 +193,10 @@
                         <button id="upload-link-button" data-translate="upload">Upload</button>
                     </div>
                     <div id="upload-file-container" class="upload-file-container" style="display:none; margin-top:10px;">
-                        <input type="file" id="background-file-input" accept="image/*" />
+                        <input type="file" id="background-file-input" accept="image/*" style="display: none;" />
+                        <div id="upload-zone" class="upload-zone" role="button" tabindex="0">
+                            <div class="upload-zone-text" data-translate="dragImageHere">Drag an image here or click to select</div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -233,6 +236,7 @@
                         <li>Stock Tracker</li>
                         <li>Personal Stats</li>
                         <li>Achievement</li>
+                        <li>More Touhou Reference</li>
                         <li>Save Settings to Cloud</li>
                         <li>Energy Tracker</li>
                     </ul>
@@ -360,7 +364,7 @@
         </div>
 
         <div class="footer-middle">
-            Version: 0.0.2.1.5
+            Version: 0.2.2.0
         </div>
 
         <div class="footer-right">
@@ -379,5 +383,39 @@
     </button>
 
     <div id="notification" class="notification" role="alert" aria-live="assertive"></div>
+
+    <!-- Welcome Modal -->
+    <div id="welcome-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="welcome-modal-title" style="display: none;">
+        <div class="modal-content">
+            <!-- New welcome screen -->
+            <div id="welcome-screen" class="welcome-screen">
+                <h2 id="welcome-modal-title" data-translate="welcome">Welcome</h2>
+                <p data-translate="looksLikeYouAreNew">Looks like you are new here</p>
+                <div class="form-buttons">
+                    <button id="skip-button" data-translate="skip" class="modal-button left-button">Skip</button>
+                    <button id="quick-install-button" data-translate="quickInstall" class="modal-button right-button">Quick Install</button>
+                </div>
+            </div>
+            <!-- Existing theme selection screen -->
+            <div id="choose-theme-screen" class="choose-theme-screen" style="display: none;">
+                <p data-translate="chooseThemeColor">Please choose a theme color:</p>
+                <div class="predefined-colors" role="list">
+                    <button class="color-swatch" data-color="#333333" style="background-color: #333333;" aria-label="Theme Color #333333"></button>
+                    <button class="color-swatch" data-color="#1e90ff" style="background-color: #1e90ff;" aria-label="Theme Color #1e90ff"></button>
+                    <button class="color-swatch" data-color="#28a745" style="background-color: #28a745;" aria-label="Theme Color #28a745"></button>
+                    <button class="color-swatch" data-color="#ffc107" style="background-color: #ffc107;" aria-label="Theme Color #ffc107"></button>
+                    <button class="color-swatch" data-color="#dc3545" style="background-color: #dc3545;" aria-label="Theme Color #dc3545"></button>
+                    <button class="color-swatch" data-color="#6f42c1" style="background-color: #6f42c1;" aria-label="Theme Color #6f42c1"></button>
+                    <button class="color-swatch" data-color="#17a2b8" style="background-color: #17a2b8;" aria-label="Theme Color #17a2b8"></button>
+                    <button class="color-swatch" data-color="#e83e8c" style="background-color: #e83e8c;" aria-label="Theme Color #e83e8c"></button>
+                    <button class="color-swatch" data-color="#fd7e14" style="background-color: #fd7e14;" aria-label="Theme Color #fd7e14"></button>
+                </div>
+                <div class="form-buttons">
+                    <button id="back-button" data-translate="back" class="modal-button left-button">Back</button>
+                    <button id="welcome-modal-continue" data-translate="continue" class="modal-button right-button">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

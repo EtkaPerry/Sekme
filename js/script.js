@@ -83,7 +83,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         centeredToggle: document.getElementById('centered-toggle'),
         staticDynamicWidthToggle: document.getElementById('static-dynamic-width'),
         fixedItemWidthCheckbox: document.getElementById('fixed-item-width'),
-        settingsHeadline: document.querySelector('.ayarbaslik')
+        settingsHeadline: document.querySelector('.ayarbaslik'),
+        uploadZone: document.getElementById('upload-zone'),
+        welcomeModal: document.getElementById('welcome-modal'),
+        welcomeModalContinueButton: document.getElementById('welcome-modal-continue'),
+        welcomeModalColorSwatches: document.querySelectorAll('#welcome-modal .color-swatch')
     };
 
     const root = document.documentElement;
@@ -899,6 +903,58 @@ document.addEventListener('DOMContentLoaded', async () => {
     elements.uploadLinkButton.addEventListener('click', handleUploadLink);
     elements.backgroundFileInput.addEventListener('change', handleUploadFile);
 
+    const initializeUploadZone = () => {
+        const { uploadZone, backgroundFileInput } = elements;
+
+        const handleDragOver = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadZone.classList.add('dragging');
+        };
+
+        const handleDragLeave = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadZone.classList.remove('dragging');
+        };
+
+        const handleDrop = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadZone.classList.remove('dragging');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const dataUrl = e.target.result;
+                    applyBackground('upload-file', { url: dataUrl });
+                    showNotification('imageUploadSuccess');
+                    chrome.storage.local.remove('fixed-background-image');
+                    updatePinButtonState(false);
+                };
+                reader.readAsDataURL(files[0]);
+            } else {
+                showNotification('invalidImageFile');
+            }
+        };
+
+        const handleClick = () => {
+            backgroundFileInput.click();
+        };
+
+        uploadZone.addEventListener('dragover', handleDragOver);
+        uploadZone.addEventListener('dragleave', handleDragLeave);
+        uploadZone.addEventListener('drop', handleDrop);
+        uploadZone.addEventListener('click', handleClick);
+        uploadZone.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleClick();
+            }
+        });
+    };
+
     const toggleFixedBackgroundImage = (url) => {
         chrome.storage.local.get(['fixed-background-image'], (result) => {
             if (result['fixed-background-image']) {
@@ -1254,6 +1310,72 @@ document.addEventListener('DOMContentLoaded', async () => {
         initializeExportImport();
 
         initializeMoreButton();
+        initializeUploadZone();
+
+        // Check if theme color is set
+        chrome.storage.local.get(['theme-color-set'], (result) => {
+            if (!result['theme-color-set']) {
+                showWelcomeModal();
+            }
+        });
+
+        // Handle color swatch clicks in the welcome modal
+        elements.welcomeModalColorSwatches.forEach(swatch => {
+            swatch.addEventListener('click', () => {
+                const color = swatch.getAttribute('data-color');
+                updateThemeColor(color);
+                selectColorSwatch(swatch);
+            });
+        });
+
+        // Handle continue button click in the welcome modal
+        elements.welcomeModalContinueButton.addEventListener('click', () => {
+            chrome.storage.local.set({ 'theme-color-set': true }, () => {
+                hideWelcomeModal();
+            });
+        });
+
+        // Show welcome modal if first-time visitor
+        const isFirstVisit = localStorage.getItem('visited');
+        if (!isFirstVisit) {
+            showWelcomeModal();
+            localStorage.setItem('visited', 'true');
+        } else {
+            // ...existing code...
+        }
+    };
+
+    const showWelcomeModal = () => {
+        elements.welcomeModal.style.display = 'block';
+        // Show the welcome screen
+        document.getElementById('welcome-screen').style.display = 'block';
+        document.getElementById('choose-theme-screen').style.display = 'none';
+    };
+
+    // Removed duplicate hideWelcomeModal function
+
+    // Handle "Skip" button
+    document.getElementById('skip-button').addEventListener('click', () => {
+        hideWelcomeModal();
+    });
+
+    // Handle "Quick Install" button
+    document.getElementById('quick-install-button').addEventListener('click', () => {
+        // Show the theme selection screen
+        document.getElementById('welcome-screen').style.display = 'none';
+        document.getElementById('choose-theme-screen').style.display = 'block';
+    });
+
+    // Modify existing "Continue" button to proceed after theme selection
+    document.getElementById('welcome-modal-continue').addEventListener('click', () => {
+        hideWelcomeModal();
+        // ...existing code to apply selected theme...
+    });
+
+    // Removed duplicate showWelcomeModal function
+
+    const hideWelcomeModal = () => {
+        elements.welcomeModal.style.display = 'none';
     };
 
     initialize().catch(error => console.error('Initialization failed:', error));
@@ -1514,42 +1636,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     initialize().catch(error => console.error('Initialization failed:', error));
 
+    const welcomeScreen = document.getElementById('welcome-screen');
+    const chooseThemeScreen = document.getElementById('choose-theme-screen');
+    const skipButton = document.getElementById('skip-button');
+    const quickInstallButton = document.getElementById('quick-install-button');
+    const backButton = document.getElementById('back-button');
+    const welcomeModalContinueButton = document.getElementById('welcome-modal-continue');
 
-    // -------------------------------------------
-    // NEW CODE FOR PASTING IMAGE (CTRL+V) INTO UPLOAD IMAGE
-    // -------------------------------------------
-    // This code listens for a paste event, checks if the user has chosen the "upload-file"
-    // background option, and if an image is found in the clipboard, it sets it as the background.
-
-    document.addEventListener('paste', async (e) => {
-        // Check which background option is currently selected
-        const currentOption = Array.from(elements.backgroundOptionRadios).find(r => r.checked);
-        if (!currentOption || currentOption.value !== 'upload-file') {
-            return; // Only proceed if "Upload Image" is selected
-        }
-
-        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-        if (!items) return;
-
-        for (let i = 0; i < items.length; i++) {
-            const item = items[i];
-            if (item.kind === 'file' && item.type.startsWith('image/')) {
-                const file = item.getAsFile();
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (evt) => {
-                        const dataUrl = evt.target.result;
-                        applyBackground('upload-file', { url: dataUrl });
-                        showNotification('imageUploadSuccess');
-                        chrome.storage.local.remove('fixed-background-image');
-                        updatePinButtonState(false);
-                    };
-                    reader.readAsDataURL(file);
-                    break; // Stop after the first image
-                }
-            }
-        }
+    skipButton.addEventListener('click', hideWelcomeModal);
+    quickInstallButton.addEventListener('click', performQuickInstall);
+    backButton.addEventListener('click', () => {
+        welcomeScreen.style.display = 'block';
+        chooseThemeScreen.style.display = 'none';
     });
-    // -------------------------------------------
-
+    welcomeModalContinueButton.addEventListener('click', () => {
+        welcomeScreen.style.display = 'none';
+        chooseThemeScreen.style.display = 'block';
+    });
 });
