@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Sekme",
-  "version": "0.0.2.1.4",
+  "version": "0.0.2.1.5",
   "description": "Custom new tab with popup",
   "permissions": [
     "bookmarks",
