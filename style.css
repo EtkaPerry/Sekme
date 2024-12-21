@@ -850,13 +850,18 @@ body.dark-mode #search-input {
 
 .section-title {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 30px; /* Increased from 10px */
+    margin-bottom: 20px; /* Added margin bottom */
     color: #555;
     font-size: 1.125rem;
 }
 
 body.dark-mode .section-title {
     color: #ccc;
+}
+
+section {
+    margin-bottom: 40px; /* Increased from default spacing */
 }
 
 .websites-container {
@@ -1051,14 +1056,23 @@ body.dark-mode #add-custom-bookmark {
 }
 
 #welcome-modal .modal-content {
-    background-color: var(--body-bg-color);
+    background-color: #ffffff; /* Change from var(--body-bg-color) to solid white */
     margin: 10% auto;
     padding: 20px;
-    border: 1px solid var(--border-color);
+    border: 1px solid #ccc; /* Change from var(--border-color) to solid border */
     width: 80%;
     max-width: 500px;
+    height: 300px;
     text-align: center;
     border-radius: 8px;
+    position: relative;
+    box-sizing: border-box;
+    padding-bottom: 80px; /* Add space for buttons */
+}
+
+body.dark-mode #welcome-modal .modal-content {
+    background-color: #2e2e2e; /* Add solid dark background for dark mode */
+    border-color: #555;
 }
 
 #welcome-modal .predefined-colors {
@@ -1165,8 +1179,10 @@ body.dark-mode .form-group input[type="text"] {
     justify-content: space-between;
     position: absolute;
     bottom: 20px;
-    width: 100%;
+    left: 0;
+    right: 0;
     padding: 0 20px;
+    box-sizing: border-box;
 }
 
 .form-buttons button {
@@ -1468,27 +1484,51 @@ body.dark-mode .custom-css-textarea {
     bottom: 20px;
     width: 100%;
     padding: 0 20px;
+    box-sizing: border-box;
 }
 
 .modal-button {
     padding: 10px 20px;
+    height: 40px;
+    min-width: 100px; /* Reduced from 120px */
+    max-width: 150px; /* Added max-width */
     border: none;
     background-color: var(--theme-color);
     color: #ffffff;
     cursor: pointer;
     border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px; /* Added margin */
+}
+
+.modal-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0.9;
 }
 
 .left-button {
-    /* Positioning for bottom left */
     position: absolute;
     left: 20px;
     bottom: 20px;
+    background-color: #666;
 }
 
 .right-button {
-    /* Positioning for bottom right */
     position: absolute;
     right: 20px;
     bottom: 20px;
+}
+
+body.dark-mode .modal-button {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .left-button {
+    background-color: #444;
 }

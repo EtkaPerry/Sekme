@@ -1357,6 +1357,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Handle "Skip" button
     document.getElementById('skip-button').addEventListener('click', () => {
         hideWelcomeModal();
+        chrome.storage.local.set({ 'theme-color-set': true });
     });
 
     // Handle "Quick Install" button
