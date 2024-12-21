@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Sekme",
   "version": "0.2",
-  "description": "Custom new tab with popup",
+  "description": "Custom new tab",
   "permissions": [
     "bookmarks",
     "storage",
