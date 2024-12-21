@@ -31,13 +31,11 @@
                         <input type="range" id="menu-width" min="500" max="5000" value="1200" step="50" class="slider" />
                         <span id="menu-width-value">1200px</span>
                     </div>
-                    <div class="setting-input">
-                        <label class="toggle-label">
-                            <span data-translate="fixedItemWidth">Fixed Item Width:</span>
-                            <input type="checkbox" id="fixed-item-width" class="toggle-input" checked />
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                    <label class="toggle-label">
+                        <span data-translate="fixedItemWidth">Fixed Item Width:</span>
+                        <input type="checkbox" id="fixed-item-width" class="toggle-input" checked />
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
             </section>
 
@@ -388,10 +386,8 @@
 
     <div id="notification" class="notification" role="alert" aria-live="assertive"></div>
 
-    <!-- Welcome Modal -->
     <div id="welcome-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="welcome-modal-title" style="display: none;">
         <div class="modal-content">
-            <!-- New welcome screen -->
             <div id="welcome-screen" class="welcome-screen">
                 <h2 id="welcome-modal-title" data-translate="welcome">Welcome</h2>
                 <p data-translate="looksLikeYouAreNew">Looks like you are new here</p>
@@ -400,7 +396,6 @@
                     <button id="quick-install-button" data-translate="quickInstall" class="modal-button right-button">Quick Install</button>
                 </div>
             </div>
-            <!-- Existing theme selection screen -->
             <div id="choose-theme-screen" class="choose-theme-screen" style="display: none;">
                 <p data-translate="chooseThemeColor">Please choose a theme color:</p>
                 <div class="predefined-colors" role="list">
@@ -415,7 +410,7 @@
                     <button class="color-swatch" data-color="#fd7e14" style="background-color: #fd7e14;" aria-label="Theme Color #fd7e14"></button>
                 </div>
                 <div class="form-buttons">
-                    <button id="welcome-modal-continue" data-translate="continue" class="modal-button right-button">Continue</button>
+                    <button id="welcome-modal-continue" data-translate="finish" class="modal-button right-button">Finish</button>
                 </div>
             </div>
         </div>

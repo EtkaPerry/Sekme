@@ -11,6 +11,9 @@ html, body {
     background-color: var(--background-color, #f0f0f0);
     color: var(--text-color, #333333);
     font-size: 14px;
+    --footer-link-color: #ffffff;
+    --footer-link-color-dark: var(--theme-color);
+    --menu-width: 1200px;
 }
 
 :root {
@@ -195,14 +198,6 @@ body.dark-mode .settings-section {
 .export-button:hover,
 .import-button:hover {
     opacity: 0.9;
-}
-
-.settings-section.expanded .settings-body {
-    display: block;
-}
-
-.settings-section.collapsed .settings-body {
-    display: none;
 }
 
 .predefined-colors {
@@ -646,7 +641,7 @@ body.dark-mode .social-links {
     flex-direction: column;
     align-items: center;
     text-decoration: none;
-    color: #000000; /* Force black text color */
+    color: #000000;
     padding: 10px 0;
     transition: background-color 0.3s;
     background-color: var(--theme-color);
@@ -659,7 +654,7 @@ body.dark-mode .social-links {
 }
 
 body.dark-mode .social-link {
-    color: #000000; /* Keep text black in dark mode */
+    color: #000000;
     border-bottom: 1px solid var(--theme-color-dark);
     border-right: 1px solid var(--theme-color-dark);
 }
@@ -850,8 +845,8 @@ body.dark-mode #search-input {
 
 .section-title {
     text-align: center;
-    margin-top: 30px; /* Increased from 10px */
-    margin-bottom: 20px; /* Added margin bottom */
+    margin-top: 30px;
+    margin-bottom: 20px;
     color: #555;
     font-size: 1.125rem;
 }
@@ -861,7 +856,7 @@ body.dark-mode .section-title {
 }
 
 section {
-    margin-bottom: 40px; /* Increased from default spacing */
+    margin-bottom: 40px;
 }
 
 .websites-container {
@@ -1056,10 +1051,10 @@ body.dark-mode #add-custom-bookmark {
 }
 
 #welcome-modal .modal-content {
-    background-color: #ffffff; /* Change from var(--body-bg-color) to solid white */
+    background-color: #ffffff;
     margin: 10% auto;
     padding: 20px;
-    border: 1px solid #ccc; /* Change from var(--border-color) to solid border */
+    border: 1px solid #ccc;
     width: 80%;
     max-width: 500px;
     height: 300px;
@@ -1067,11 +1062,11 @@ body.dark-mode #add-custom-bookmark {
     border-radius: 8px;
     position: relative;
     box-sizing: border-box;
-    padding-bottom: 80px; /* Add space for buttons */
+    padding-bottom: 80px;
 }
 
 body.dark-mode #welcome-modal .modal-content {
-    background-color: #2e2e2e; /* Add solid dark background for dark mode */
+    background-color: #2e2e2e;
     border-color: #555;
 }
 
@@ -1083,7 +1078,6 @@ body.dark-mode #welcome-modal .modal-content {
 }
 
 #welcome-modal .color-swatch {
-    /* Same styles as in the settings */
     width: 40px;
     height: 40px;
     margin: 5px;
@@ -1093,7 +1087,6 @@ body.dark-mode #welcome-modal .modal-content {
 }
 
 #welcome-modal-continue {
-    /* Styles for the continue button */
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
@@ -1414,23 +1407,19 @@ button {
     display: none;
 }
 
-/* For Firefox */
 * {
     scrollbar-width: thin;
     scrollbar-color: var(--theme-color) transparent;
 }
 
-/* Hide arrows in Firefox */
 * {
     scrollbar-arrow-color: transparent;
 }
 
-/* For Internet Explorer */
 body {
     -ms-overflow-style: none;
 }
 
-/* Hide arrow buttons in webkit browsers */
 ::-webkit-scrollbar-button:vertical:start:decrement,
 ::-webkit-scrollbar-button:vertical:end:increment,
 ::-webkit-scrollbar-button:horizontal:start:decrement,
@@ -1455,43 +1444,11 @@ body.dark-mode .custom-css-textarea {
     border: 1px solid #555;
 }
 
-.export-button,
-.import-button {
-    padding: 10px 6px;
-    margin: 5px;
-    background-color: var(--theme-color);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.export-button:hover,
-.import-button:hover {
-    opacity: 0.9;
-}
-
-.modal-content {
-    /* ...existing styles... */
-    position: relative;
-}
-
-.form-buttons {
-    display: flex;
-    justify-content: space-between;
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-
 .modal-button {
     padding: 10px 20px;
     height: 40px;
-    min-width: 100px; /* Reduced from 120px */
-    max-width: 150px; /* Added max-width */
+    min-width: 100px;
+    max-width: 150px;
     border: none;
     background-color: var(--theme-color);
     color: #ffffff;
@@ -1503,7 +1460,7 @@ body.dark-mode .custom-css-textarea {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 5px; /* Added margin */
+    margin: 0 5px;
 }
 
 .modal-button:hover {

@@ -1312,14 +1312,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         initializeMoreButton();
         initializeUploadZone();
 
-        // Check if theme color is set
         chrome.storage.local.get(['theme-color-set'], (result) => {
             if (!result['theme-color-set']) {
                 showWelcomeModal();
             }
         });
 
-        // Handle color swatch clicks in the welcome modal
         elements.welcomeModalColorSwatches.forEach(swatch => {
             swatch.addEventListener('click', () => {
                 const color = swatch.getAttribute('data-color');
@@ -1328,52 +1326,39 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         });
 
-        // Handle continue button click in the welcome modal
         elements.welcomeModalContinueButton.addEventListener('click', () => {
             chrome.storage.local.set({ 'theme-color-set': true }, () => {
                 hideWelcomeModal();
             });
         });
 
-        // Show welcome modal if first-time visitor
         const isFirstVisit = localStorage.getItem('visited');
         if (!isFirstVisit) {
             showWelcomeModal();
             localStorage.setItem('visited', 'true');
         } else {
-            // ...existing code...
         }
     };
 
     const showWelcomeModal = () => {
         elements.welcomeModal.style.display = 'block';
-        // Show the welcome screen
         document.getElementById('welcome-screen').style.display = 'block';
         document.getElementById('choose-theme-screen').style.display = 'none';
     };
 
-    // Removed duplicate hideWelcomeModal function
-
-    // Handle "Skip" button
     document.getElementById('skip-button').addEventListener('click', () => {
         hideWelcomeModal();
         chrome.storage.local.set({ 'theme-color-set': true });
     });
 
-    // Handle "Quick Install" button
     document.getElementById('quick-install-button').addEventListener('click', () => {
-        // Show the theme selection screen
         document.getElementById('welcome-screen').style.display = 'none';
         document.getElementById('choose-theme-screen').style.display = 'block';
     });
 
-    // Modify existing "Continue" button to proceed after theme selection
     document.getElementById('welcome-modal-continue').addEventListener('click', () => {
         hideWelcomeModal();
-        // ...existing code to apply selected theme...
     });
-
-    // Removed duplicate showWelcomeModal function
 
     const hideWelcomeModal = () => {
         elements.welcomeModal.style.display = 'none';
