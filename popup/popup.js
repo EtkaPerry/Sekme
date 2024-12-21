@@ -1,43 +1,56 @@
 // popup.js
 document.addEventListener('DOMContentLoaded', () => {
     const actionButton = document.getElementById('actionButton');
+    const notification = document.getElementById('notification');
 
-    const showNotification = (message) => {
-        const notification = document.getElementById('notification');
+    const showNotification = (message, duration = 3000) => {
         notification.textContent = message;
         notification.classList.add('show');
-
-        // Hide the notification after 3 seconds
         setTimeout(() => {
             notification.classList.remove('show');
-        }, 3000);
+        }, duration);
     };
 
     actionButton.addEventListener('click', () => {
-        // Get the current tab
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            const activeTab = tabs[0];
-            const url = activeTab.url;
-            const title = activeTab.title;
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (!tabs || !tabs[0]) {
+                showNotification('Unable to get current tab information');
+                return;
+            }
 
-            // Get the existing custom bookmarks
+            const currentTab = tabs[0];
+            const bookmark = {
+                url: currentTab.url,
+                title: currentTab.title || 'Untitled'
+            };
+
+            // Get existing custom bookmarks
             chrome.storage.local.get(['custom-bookmarks'], (result) => {
                 let customBookmarks = result['custom-bookmarks'] || [];
-                // Check for duplicates
-                if (customBookmarks.some(bm => bm.url === url)) {
-                    showNotification('Bookmark already exists.');
+
+                // Check if URL already exists
+                if (customBookmarks.some(bm => bm.url === bookmark.url)) {
+                    showNotification('This website is already bookmarked');
                     return;
                 }
 
-                // Add the new bookmark
-                customBookmarks.push({url: url, title: title});
-                // Save back to storage
-                chrome.storage.local.set({'custom-bookmarks': customBookmarks}, () => {
-                    showNotification('Bookmark added successfully!');
-                    // Close the popup after adding (optional)
-                    setTimeout(() => {
-                        window.close();
-                    }, 1000);
+                // Check maximum limit (30 bookmarks)
+                if (customBookmarks.length >= 30) {
+                    showNotification('Maximum bookmark limit reached (30)');
+                    return;
+                }
+
+                // Add new bookmark
+                customBookmarks.push(bookmark);
+
+                // Save updated bookmarks
+                chrome.storage.local.set({ 'custom-bookmarks': customBookmarks }, () => {
+                    if (chrome.runtime.lastError) {
+                        showNotification('Error saving bookmark: ' + chrome.runtime.lastError.message);
+                    } else {
+                        showNotification('Bookmark added successfully!');
+                        setTimeout(() => window.close(), 1500);
+                    }
                 });
             });
         });

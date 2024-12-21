@@ -389,7 +389,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     elements.menuWidthInput.addEventListener('input', (e) => {
         const value = e.target.value;
-        root.style.setProperty('--menu-width', `${value}px`);
+        document.documentElement.style.setProperty('--menu-width', `${value}px`);
+        // Update all website containers except search
+        document.querySelectorAll('.websites-container, main').forEach(el => {
+            el.style.maxWidth = `${value}px`;
+        });
         elements.menuWidthValueSpan.textContent = `${value}px`;
     });
 
@@ -403,7 +407,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             showNotification('minMenuWidth');
             value = 500;
         }
-        root.style.setProperty('--menu-width', `${value}px`);
+        document.documentElement.style.setProperty('--menu-width', `${value}px`);
+        // Update all website containers except search
+        document.querySelectorAll('.websites-container, main').forEach(el => {
+            el.style.maxWidth = `${value}px`;
+        });
         elements.menuWidthInput.value = value;
         elements.menuWidthValueSpan.textContent = `${value}px`;
         chrome.storage.local.set({ 'menu-width': value }, () => {
@@ -1288,7 +1296,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             elements.openInNewTabCheckbox.checked = openInNewTab;
 
             const menuWidth = parseInt(result['menu-width'], 10) || 1200;
-            root.style.setProperty('--menu-width', `${menuWidth}px`);
+            document.documentElement.style.setProperty('--menu-width', `${menuWidth}px`);
+            document.querySelectorAll('.websites-container, main').forEach(el => {
+                el.style.maxWidth = `${menuWidth}px`;
+            });
             elements.menuWidthInput.value = menuWidth;
             elements.menuWidthValueSpan.textContent = `${menuWidth}px`;
 

@@ -718,8 +718,9 @@ body.dark-mode #main-footer a:visited {
 
 main {
     width: 100%;
-    max-width: 1200px;
+    max-width: var(--menu-width);
     margin: 0 auto;
+    padding: 0 20px;
 }
 
 #logo-container {
@@ -792,9 +793,10 @@ body.dark-mode .clock-container {
     display: flex;
     align-items: center;
     gap: 3px;
-    max-width: var(--menu-width);
     width: 100%;
+    max-width: 1200px;
     position: relative;
+    padding: 0 20px;
 }
 
 #search-engine,
@@ -866,9 +868,11 @@ section {
     align-items: center;
     gap: 15px;
     margin-top: 20px;
+    width: 100%;
     max-width: var(--menu-width);
     margin-left: auto;
     margin-right: auto;
+    padding: 0 20px;
 }
 
 .link {
