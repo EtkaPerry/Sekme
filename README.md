@@ -131,7 +131,7 @@
 <ul>
   <li><strong>Patreon</strong>: <a href="https://www.patreon.com/Etka" target="_blank" rel="noopener">patreon.com/Etka</a></li>
   <li><strong>Twitter</strong>: <a href="https://twitter.com/etkacouk" target="_blank" rel="noopener">twitter.com/etkacouk</a></li>
-  <li><strong>Website</strong>: <a href="http://etka.co.uk" target="_blank" rel="noopener">etka.co.uk</a></li>
+  <li><strong>Website</strong>: <a href="http://etka.co.uk/Sekme" target="_blank" rel="noopener">etka.co.uk</a></li>
 </ul>
 
 <p><strong>Thank you</strong> for using <strong>Sekme</strong></p>
