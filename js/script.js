@@ -87,7 +87,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         uploadZone: document.getElementById('upload-zone'),
         welcomeModal: document.getElementById('welcome-modal'),
         welcomeModalContinueButton: document.getElementById('welcome-modal-continue'),
-        welcomeModalColorSwatches: document.querySelectorAll('#welcome-modal .color-swatch')
+        welcomeModalColorSwatches: document.querySelectorAll('#welcome-modal .color-swatch'),
+        languageButton: document.getElementById('language-button'),
+        languageDropdown: document.getElementById('language-dropdown'),
+        currentLanguageFlag: document.getElementById('current-language-flag'),
+        languageOptions: document.querySelectorAll('.language-option')
     };
 
     const root = document.documentElement;
@@ -95,7 +99,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     let clockInterval;
     let userLanguage;
 
-    const detectLanguage = () => (navigator.language || navigator.userLanguage).split('-')[0];
+    const detectLanguage = () => {
+        // First try to get saved language preference
+        return new Promise(resolve => {
+            chrome.storage.local.get(['language'], (result) => {
+                if (result.language) {
+                    resolve(result.language);
+                    return;
+                }
+
+                // If no saved preference, try navigator.languages
+                const supportedLanguages = ['en', 'tr', 'de'];
+                
+                // Check navigator.languages first (returns array of preferred languages)
+                const preferredLang = navigator.languages
+                    .map(lang => lang.split('-')[0])
+                    .find(lang => supportedLanguages.includes(lang));
+
+                // Fallback to navigator.language if no match in navigator.languages
+                const fallbackLang = navigator.language.split('-')[0];
+                
+                // Use found language, fallback, or default to 'en'
+                const detectedLang = preferredLang || 
+                    (supportedLanguages.includes(fallbackLang) ? fallbackLang : 'en');
+
+                // Save detected language
+                chrome.storage.local.set({ language: detectedLang }, () => {
+                    resolve(detectedLang);
+                });
+            });
+        });
+    };
 
     const applyTranslations = (lang) => {
         userLanguage = translations[lang] ? lang : 'en';
@@ -1224,8 +1258,48 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    const initializeLanguage = () => {
+        // Set initial language
+        chrome.storage.local.get(['language'], (result) => {
+            const savedLang = result.language || 'en';
+            updateLanguageUI(savedLang);
+            applyTranslations(savedLang);
+        });
+
+        // Toggle language dropdown
+        elements.languageButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            elements.languageDropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!elements.languageDropdown.contains(e.target) && !elements.languageButton.contains(e.target)) {
+                elements.languageDropdown.classList.remove('show');
+            }
+        });
+
+        // Handle language selection
+        elements.languageOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = option.dataset.lang;
+                chrome.storage.local.set({ language: lang }, () => {
+                    updateLanguageUI(lang);
+                    applyTranslations(lang);
+                    elements.languageDropdown.classList.remove('show');
+                    showNotification('languageChanged');
+                });
+            });
+        });
+    };
+
+    const updateLanguageUI = (lang) => {
+        elements.currentLanguageFlag.src = `resim/bayrak/${lang === 'en' ? 'us' : lang}.svg`;
+    };
+
     const initialize = async () => {
-        const lang = detectLanguage();
+        const lang = await detectLanguage();
         applyTranslations(lang);
 
         await loadResources();
@@ -1349,6 +1423,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             localStorage.setItem('visited', 'true');
         } else {
         }
+        initializeLanguage();
     };
 
     const showWelcomeModal = () => {
@@ -1629,6 +1704,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initialize = async () => {
         await originalInitialize();
         initializeCustomCssSection();
+        initializeLanguage();
     };
 
     initialize().catch(error => console.error('Initialization failed:', error));

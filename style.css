@@ -989,6 +989,72 @@ body.dark-mode .upload-zone-text {
     color: #aaa;
 }
 
+.language-selector {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.language-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.language-button svg {
+    width: 28px;
+    height: 28px;
+    border-radius: 2px;
+}
+
+.language-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--theme-color);
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 4px;
+    padding: 5px 0;
+    display: none;
+    z-index: 1000;
+    min-width: 120px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.language-dropdown.show {
+    display: block;
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+}
+
+.language-option:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.language-option svg {
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+}
+
+body.dark-mode .language-dropdown {
+    background-color: var(--theme-color-dark);
+    border-color: rgba(255,255,255,0.1);
+}
+
 @media (max-width: 600px) {
     .search-container {
         flex-direction: column;
