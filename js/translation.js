@@ -78,6 +78,7 @@ const translations = {
         customCssReset: "Custom CSS reset successfully",
         menuWidthUpdated: "Menu width updated successfully",
         languageChanged: "Language changed successfully",
+        recentlyUsedRemoved: 'Recently used website removed',
 
         // Buttons and inputs
         addCustomBookmark: "Add Custom Bookmark",
@@ -263,6 +264,7 @@ const translations = {
         customCssReset: "Özel CSS başarıyla sıfırlandı",
         menuWidthUpdated: "Menü genişliği başarıyla güncellendi",
         languageChanged: "Dil başarıyla değiştirildi",
+        recentlyUsedRemoved: 'Son kullanılan web sitesi kaldırıldı',
 
         // Buttons and inputs
         addCustomBookmark: "Özel Yer İşareti Ekle",
@@ -307,7 +309,7 @@ const translations = {
         recentlyUsedWebsitesS: "Son Kullanılan Web Siteleri Ayarları",
         bookmarksSettings: "Yer İşaretleri Ayarları",
         customBookmarksSettings: "Özel Yer İşaretleri Ayarları",
-        rearrangeSections: "Bölümleri Yeniden Düzenle",
+        rearrangeSections: "Bölümleri Yeniden Sırala",
         themeSettings: "Tema Ayarları",
         themeColor: "Tema Rengi",
         predefinedThemes: "Önceden Tanımlanmış Temalar",
@@ -448,6 +450,7 @@ const translations = {
         customCssReset: "Benutzerdefiniertes CSS erfolgreich zurückgesetzt",
         menuWidthUpdated: "Menübreite erfolgreich aktualisiert",
         languageChanged: "Sprache erfolgreich geändert",
+        recentlyUsedRemoved: 'Kürzlich verwendete Website entfernt',
 
         // Buttons and inputs
         addCustomBookmark: "Benutzerdefiniertes Lesezeichen hinzufügen",

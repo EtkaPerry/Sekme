@@ -699,21 +699,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const reorderMainSections = () => {
-        chrome.storage.local.get(['sections-order'], (result) => {
-            const order = result['sections-order'] || ['recently-used-section', 'bookmarks', 'custom-bookmarks'];
-            order.forEach(id => {
-                const section = document.getElementById(id);
-                if (section) {
-                    const titleId = id === 'recently-used-section' ? 'most-used-title' :
-                                    id === 'bookmarks' ? 'bookmarks-title' :
-                                    id === 'custom-bookmarks' ? 'custom-bookmarks-title' : null;
-                    if (titleId) {
-                        const title = document.getElementById(titleId);
-                        if (title) elements.mainContent.appendChild(title);
-                    }
-                    elements.mainContent.appendChild(section);
-                }
-            });
+        const main = document.querySelector('main');
+        const order = Array.from(elements.rearrangeSectionsList.children).map(li => li.dataset.sectionId);
+        
+        order.forEach(sectionId => {
+            const section = document.getElementById(sectionId);
+            if (section && section.parentElement === main) {
+                main.appendChild(section);
+            }
         });
     };
 
@@ -724,29 +717,99 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
+    const setupDragAndDrop = () => {
+        const listItems = document.querySelectorAll('#rearrange-sections-list li');
+        let draggedItem = null;
+
+        listItems.forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedItem = item;
+                e.dataTransfer.effectAllowed = 'move';
+                item.classList.add('dragging');
+            });
+
+            item.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                
+                const bounding = item.getBoundingClientRect();
+                const offset = bounding.y + (bounding.height/2);
+                
+                if (e.clientY - offset > 0) {
+                    item.style.borderBottom = '2px solid var(--theme-color)';
+                    item.style.borderTop = '';
+                } else {
+                    item.style.borderTop = '2px solid var(--theme-color)';
+                    item.style.borderBottom = '';
+                }
+            });
+
+            item.addEventListener('dragleave', () => {
+                item.style.borderTop = '';
+                item.style.borderBottom = '';
+            });
+
+            item.addEventListener('drop', (e) => {
+                e.preventDefault();
+                item.style.borderTop = '';
+                item.style.borderBottom = '';
+                
+                if (draggedItem !== item) {
+                    const list = Array.from(elements.rearrangeSectionsList.children);
+                    const fromIndex = list.indexOf(draggedItem);
+                    const toIndex = list.indexOf(item);
+                    
+                    if (fromIndex !== -1 && toIndex !== -1) {
+                        const bounding = item.getBoundingClientRect();
+                        const offset = bounding.y + (bounding.height/2);
+                        const dropAfter = e.clientY - offset > 0;
+                        
+                        if (dropAfter) {
+                            item.after(draggedItem);
+                        } else {
+                            item.before(draggedItem);
+                        }
+                        
+                        updateRearrangeSectionsNumbering();
+                        saveSectionsOrder();
+                        reorderMainSections();
+                    }
+                }
+            });
+
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+                document.querySelectorAll('#rearrange-sections-list li').forEach(li => {
+                    li.style.borderTop = '';
+                    li.style.borderBottom = '';
+                });
+            });
+        });
+    };
+
     const loadSectionsOrder = () => {
         chrome.storage.local.get(['sections-order'], (result) => {
-            const order = result['sections-order'] || ['recently-used-section', 'bookmarks', 'custom-bookmarks'];
-            elements.rearrangeSectionsList.innerHTML = '';
-            order.forEach(id => {
-                const li = document.createElement('li');
-                li.draggable = true;
-                li.dataset.sectionId = id;
-                const displayNameKey = {
-                    'recently-used-section': 'recentlyUsedWebsites',
-                    'bookmarks': 'yourBookmarks',
-                    'custom-bookmarks': 'yourCustomBookmarks'
-                }[id] || id;
-                const displayName = translateText(displayNameKey);
-                li.innerHTML = `<span class="section-number">${order.indexOf(id) + 1}.</span><span class="section-name">${displayName}</span>`;
-                li.addEventListener('dragstart', () => li.classList.add('dragging'));
-                li.addEventListener('dragover', (e) => e.preventDefault());
-                li.addEventListener('drop', handleDrag);
-                li.addEventListener('dragend', handleDragEnd);
-                elements.rearrangeSectionsList.appendChild(li);
-            });
+            const defaultOrder = ['recently-used-section', 'bookmarks-section', 'custom-bookmarks-section'];
+            const order = result['sections-order'] || defaultOrder;
+            const list = elements.rearrangeSectionsList;
+            
+            list.innerHTML = order.map((sectionId, index) => `
+                <li draggable="true" data-section-id="${sectionId}">
+                    <span class="section-number">${index + 1}.</span>
+                    <span class="section-name" data-translate="${
+                        sectionId === 'recently-used-section' ? 'recentlyUsedWebsites' : 
+                        sectionId === 'bookmarks-section' ? 'yourBookmarks' : 
+                        'CustomBookmarks'
+                    }">${
+                        sectionId === 'recently-used-section' ? 'Recently Used Websites' : 
+                        sectionId === 'bookmarks-section' ? 'Your Bookmarks' : 
+                        'Custom Bookmarks'
+                    }</span>
+                </li>
+            `).join('');
+
+            setupDragAndDrop();
             reorderMainSections();
-            updateRearrangeSectionsNumbering();
         });
     };
 
@@ -1447,10 +1510,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
+    const removeRecentlyUsed = (url) => {
+        chrome.storage.local.get(['recent-websites'], (result) => {
+            let recent = result['recent-websites'] || [];
+            recent = recent.filter(site => site.url !== url);
+            chrome.storage.local.set({ 'recent-websites': recent }, () => {
+                updateRecentlyUsedWebsites();
+                showNotification('recentlyUsedRemoved');
+            });
+        });
+    };
+
+    const removeCustomBookmark = (url) => {
+        customBookmarks = customBookmarks.filter(bookmark => bookmark.url !== url);
+        chrome.storage.local.set({ 'custom-bookmarks': customBookmarks }, () => {
+            loadCustomBookmarks();
+            showNotification('bookmarkRemoved');
+        });
+    };
+
     const setupLinkDelegation = () => {
         const handleLinkClick = (e) => {
             const link = e.target.closest('.link');
-            if (link) {
+            if (link && !e.target.classList.contains('remove-custom-bookmark')) {
                 e.preventDefault();
                 const url = link.href;
                 const title = link.querySelector('span').textContent;
@@ -1461,7 +1543,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const handleAuxClick = (e) => {
             if (e.button === 1) {
                 const link = e.target.closest('.link');
-                if (link) {
+                if (link && !e.target.classList.contains('remove-custom-bookmark')) {
                     e.preventDefault();
                     const url = link.href;
                     const title = link.querySelector('span').textContent;
@@ -1470,9 +1552,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         };
 
-        elements.bookmarksContainer.addEventListener('click', handleLinkClick);
-        elements.bookmarksContainer.addEventListener('auxclick', handleAuxClick);
-
+        // Handle bookmark removal
         elements.mostUsedContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-custom-bookmark')) {
                 e.preventDefault();
@@ -1486,8 +1566,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 handleLinkClick(e);
             }
         });
-        elements.mostUsedContainer.addEventListener('auxclick', handleAuxClick);
 
+        // Handle custom bookmarks removal
         elements.customBookmarksContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-custom-bookmark')) {
                 e.preventDefault();
@@ -1501,6 +1581,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 handleLinkClick(e);
             }
         });
+
+        elements.bookmarksContainer.addEventListener('click', handleLinkClick);
+        elements.bookmarksContainer.addEventListener('auxclick', handleAuxClick);
+        elements.mostUsedContainer.addEventListener('auxclick', handleAuxClick);
         elements.customBookmarksContainer.addEventListener('auxclick', handleAuxClick);
     };
 

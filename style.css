@@ -589,11 +589,10 @@ body.dark-mode .slider::-moz-range-thumb {
     background-color: #e0e0e0;
     border: 1px solid #ccc;
     border-radius: 4px;
-    cursor: grab;
+    cursor: move;
     display: flex;
     align-items: center;
-    color: #333;
-    font-size: 0.875rem;
+    transition: all 0.2s ease;
 }
 
 body.dark-mode #rearrange-sections-list li {
@@ -602,11 +601,24 @@ body.dark-mode #rearrange-sections-list li {
     color: #f0f0f0;
 }
 
+#rearrange-sections-list li.dragging {
+    opacity: 0.5;
+    background-color: var(--theme-color);
+    color: white;
+}
+
+#rearrange-sections-list li.over {
+    border: 2px dashed #1e90ff;
+}
+
+#rearrange-sections-list li:hover {
+    background-color: var(--theme-color-transparent);
+}
+
 .section-number {
     margin-right: 10px;
     font-weight: bold;
-    width: 30px;
-    text-align: right;
+    min-width: 25px;
 }
 
 .section-name {
