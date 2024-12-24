@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         hideBookmarksCheckbox: document.getElementById('hide-bookmarks'),
         recentlyUsedSection: document.getElementById('recently-used-section'),
         mostUsedContainer: document.getElementById('most-used'),
-        searchEngineSelect: document.getElementById('search-engine'),
         themeColorInput: document.getElementById('theme-color'),
         colorSwatches: document.querySelectorAll('.color-swatch'),
         resetSettingsButton: document.getElementById('reset-settings'),
@@ -60,9 +59,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         settingsButton: document.getElementById('settings-icon'),
         darkModeToggle: document.getElementById('toggle-mode'),
         notification: document.getElementById('notification'),
-        searchInput: document.getElementById('search-input'),
-        openInNewTabCheckbox: document.getElementById('open-in-new-tab'),
-        searchButton: document.getElementById('search-button'),
         exportSettingsButton: document.getElementById('export-settings'),
         importSettingsButton: document.getElementById('import-settings'),
         importSettingsFileInput: document.getElementById('import-settings-file'),
@@ -467,36 +463,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    elements.searchInput.addEventListener('keypress', (e) => {
-        if (e.key !== 'Enter') return;
-        performSearch();
-    });
-
-    elements.searchButton.addEventListener('click', () => {
-        performSearch();
-    });
-
-    function performSearch() {
-        const term = elements.searchInput.value.trim();
-        if (!term) return;
-        chrome.storage.local.get(['selected-search-engine', 'openInNewTab'], (result) => {
-            const searchEngine = result['selected-search-engine'] || 'https://www.google.com/search?q=';
-            const openInNewTab = result['openInNewTab'] || false;
-            const searchURL = `${searchEngine}${encodeURIComponent(term)}`;
-            if (openInNewTab) {
-                window.open(searchURL, '_blank');
-            } else {
-                window.location.href = searchURL;
-            }
-            addToRecentlyUsed(searchURL, `Search: ${term}`);
-            elements.searchInput.value = '';
-        });
-    }
-
-    elements.searchEngineSelect.addEventListener('change', (e) => {
-        chrome.storage.local.set({ 'selected-search-engine': e.target.value });
-    });
-
     const toggleVisibility = (checkbox, container, title, displayStyle = 'block') => {
         const isChecked = checkbox.checked;
         container.style.display = isChecked ? 'none' : displayStyle;
@@ -577,54 +543,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     const loadCustomBookmarks = () => {
-        elements.customBookmarksContainer.innerHTML = '';
-        customBookmarks.slice(0, maxCustomBookmarks).forEach(bookmark => {
-            const link = document.createElement('a');
-            link.href = bookmark.url;
-            link.className = 'link';
-            link.role = 'listitem';
-            link.innerHTML = `
-                <img class="favicon" src="https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(new URL(bookmark.url).hostname)}" alt="Favicon">
-                <span>${sanitizeHTML(shortenTitle(bookmark.title))}</span>
-                <button class="remove-custom-bookmark" title="${translateText('removeBookmark')}" aria-label="${translateText('removeBookmark')}">×</button>
-            `;
-            applyFixedItemWidth(link);
-            elements.customBookmarksContainer.appendChild(link);
-        });
-        if (customBookmarks.length && !elements.hideCustomBookmarksCheckbox.checked) {
-            elements.customBookmarksContainer.style.display = '';
-            elements.customBookmarksTitle.style.display = 'block';
-        } else {
-            elements.customBookmarksContainer.style.display = 'none';
-            elements.customBookmarksTitle.style.display = 'none';
-        }
-    };
-
-    const removeCustomBookmark = (url) => {
-        if (confirm(translateText('areYouSureRemoveBookmark'))) {
-            customBookmarks = customBookmarks.filter(bm => bm.url !== url);
-            chrome.storage.local.set({ 'custom-bookmarks': customBookmarks }, () => {
-                loadCustomBookmarks();
-                showNotification('bookmarkRemoved');
+        chrome.storage.local.get(['custom-bookmarks'], (result) => {
+            customBookmarks = result['custom-bookmarks'] || [];
+            elements.customBookmarksContainer.innerHTML = '';
+            if (customBookmarks.length === 0) {
+                elements.customBookmarksContainer.style.display = 'none';
+                elements.customBookmarksTitle.style.display = 'none';
+                return;
+            }
+    
+            customBookmarks.slice(0, maxCustomBookmarks).forEach(bookmark => {
+                const link = document.createElement('a');
+                link.href = bookmark.url;
+                link.className = 'link';
+                link.role = 'listitem';
+                link.innerHTML = `
+                    <img class="favicon" src="https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(new URL(bookmark.url).hostname)}" alt="Favicon">
+                    <span>${sanitizeHTML(shortenTitle(bookmark.title))}</span>
+                    <button class="remove-custom-bookmark" title="${translateText('removeBookmark')}" aria-label="${translateText('removeBookmark')}">×</button>
+                `;
+                applyFixedItemWidth(link);
+                elements.customBookmarksContainer.appendChild(link);
             });
-        }
-    };
-
-    const removeRecentlyUsed = (url) => {
-        chrome.storage.local.get(['recent-websites'], (result) => {
-            let recent = result['recent-websites'] || [];
-            if (confirm(translateText('areYouSureRemoveRecentlyUsed'))) {
-                recent = recent.filter(site => site.url !== url);
-                chrome.storage.local.set({ 'recent-websites': recent }, () => {
-                    updateRecentlyUsedWebsites();
-                    showNotification('recentlyUsedRemoved');
-                });
+    
+            if (!elements.hideCustomBookmarksCheckbox.checked) {
+                elements.customBookmarksContainer.style.display = '';
+                elements.customBookmarksTitle.style.display = 'block';
             }
         });
     };
-
+    
     const addCustomBookmark = (bookmark) => {
-        if (customBookmarks.length >= 30) {
+        if (customBookmarks.length >= maxCustomBookmarks) {
             showNotification('maxCustomBookmarks30');
             return;
         }
@@ -1306,7 +1256,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         initializeDarkMode();
         listenToSystemDarkMode();
         initializeTheme();
-        chrome.storage.local.get(['max-bookmarks', 'max-recently-used-items', 'max-custom-bookmarks', 'hide-recently-used', 'hide-bookmarks', 'selected-search-engine', 'openInNewTab', 'hide-custom-bookmarks', 'menu-width', 'fixed-item-width'], (result) => {
+        chrome.storage.local.get(['max-bookmarks', 'max-recently-used-items', 'max-custom-bookmarks', 'hide-recently-used', 'hide-bookmarks', 'hide-custom-bookmarks', 'menu-width', 'fixed-item-width'], (result) => {
             maxBookmarks = parseInt(result['max-bookmarks'], 10) || 21;
             if (maxBookmarks > 210) {
                 showNotification('maxBookmarks');
@@ -1364,11 +1314,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 elements.customBookmarksTitle.style.display = 'none';
                 elements.hideCustomBookmarksCheckbox.checked = true;
             }
-            const savedEngine = result['selected-search-engine'] || 'https://www.google.com/search?q=';
-            elements.searchEngineSelect.value = savedEngine;
-            const openInNewTab = result['openInNewTab'] || false;
-            elements.openInNewTabCheckbox.checked = openInNewTab;
-
             const menuWidth = parseInt(result['menu-width'], 10) || 1200;
             document.documentElement.style.setProperty('--menu-width', `${menuWidth}px`);
             document.querySelectorAll('.websites-container, main').forEach(el => {
@@ -1424,6 +1369,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
         }
         initializeLanguage();
+        chrome.storage.local.get(['custom-bookmarks', 'hide-custom-bookmarks'], (result) => {
+            customBookmarks = result['custom-bookmarks'] || [];
+            const hideCustom = result['hide-custom-bookmarks'] || false;
+            elements.hideCustomBookmarksCheckbox.checked = hideCustom;
+            if (hideCustom) {
+                elements.customBookmarksContainer.style.display = 'none';
+                elements.customBookmarksTitle.style.display = 'none';
+            }
+            loadCustomBookmarks();
+        });
     };
 
     const showWelcomeModal = () => {
@@ -1478,18 +1433,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 setBackToTopPosition(e.target.value);
             }
         });
-    });
-
-    const initializeOpenInNewTabToggle = () => {
-        chrome.storage.local.get(['openInNewTab'], (result) => {
-            const isChecked = result['openInNewTab'] || false;
-            elements.openInNewTabCheckbox.checked = isChecked;
-        });
-    };
-
-    elements.openInNewTabCheckbox.addEventListener('change', () => {
-        const isChecked = elements.openInNewTabCheckbox.checked;
-        chrome.storage.local.set({ 'openInNewTab': isChecked });
     });
 
     const openLink = (url, title) => {
@@ -1568,8 +1511,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         elements.darkModeIcon.src = isDark ? 'resim/gns.png' : 'resim/ay.png';
         chrome.storage.local.set({ 'dark-mode': isDark });
     });
-
-    initializeOpenInNewTabToggle();
 
     const initializeExportImport = () => {
         elements.exportSettingsButton.addEventListener('click', () => {

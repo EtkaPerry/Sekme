@@ -269,9 +269,7 @@ body.dark-mode .pin-button {
 }
 
 .custom-toggle-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: none;
 }
 
 .label {
@@ -789,60 +787,23 @@ body.dark-mode .clock-container {
 }
 
 .search-container {
-    margin: 20px auto;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    width: 100%;
-    max-width: 1200px;
-    position: relative;
-    padding: 0 20px;
-}
-
-#search-engine,
-#search-input {
-    padding: 10px;
-    font-size: 0.875rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #333;
+    display: none;
 }
 
 #search-engine {
-    width: 150px;
+    display: none;
 }
 
 #search-input {
-    flex: 1;
-    min-width: 200px;
+    display: none;
 }
 
-#search-button {
-    padding: 10px 10px;
-    font-size: 0.875rem;
-    cursor: pointer;
-    background-color: var(--theme-color);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    transition: opacity 0.3s;
+.search-button {
+    display: none;
 }
 
-#search-button:hover,
-#search-button:focus {
-    opacity: 0.9;
-}
-
-body.dark-mode #search-button {
-    background-color: #555555;
-}
-
-body.dark-mode #search-engine,
-body.dark-mode #search-input {
-    background-color: #333;
-    border: 1px solid #555;
-    color: #f0f0f0;
+.custom-toggle-container {
+    display: none;
 }
 
 .section-title {
